@@ -3,23 +3,22 @@ let carrito = JSON.parse(localStorage.getItem("misProductos")) || [];
 
 let todasLasExcursiones = [];
 
+//Panel del carrito
 const carritoPanel = document.getElementById('carritoPanel');
 
-//Obtiene el boton "Ver Carrito" del HTML
+//Boton Ver Carrito
 const btnVerCarrito= document.getElementById("verCarritoBtn");
-//Evento click sobre el boton "Ver Carrito"
 
-
+//Evento sobre el boton "Ver Carrito"
 document.addEventListener("DOMContentLoaded", (event) => {
   btnVerCarrito.addEventListener("click", ()=>verCarrito());
 });
 
 
-//Obtiene el boton "Vaciar Carrito" del HTML
+//boton vaciar Carrito
 const btnVaciarCarrito = document.getElementById("vaciarCarritoBtn");
 //Evento click sobre el boton "Vaciar Carrito"
 btnVaciarCarrito.addEventListener("click", ()=>vaciarCarrito());
-
 
 
 fetch("./js/excursiones.json")
@@ -57,7 +56,7 @@ fetch("./js/excursiones.json")
             todasLasExcursiones.push(el);
 
 })
-    });
+});
 //Funcion para agregar una excursion al carrito
 
   function agregarAlCarrito(id) {
@@ -85,18 +84,15 @@ fetch("./js/excursiones.json")
             console.log('Excursion sin Cupo');
       }
 
-      Toastify({
-        text: `Agregaste ${excursionAgregar.nombre} al carrito`,
-        duration: 2000,
-        // position: "left"
-    }).showToast();
+      let respuesta = "Agregaste " + excursionAgregar.nombre + " al carrito"
+
+      mostrarNotificacion(respuesta);
         
-      console.log("Tu carrito: ", carrito);
     }
 
 
 
-//Funcion que muestra las excursiones seleccionadas
+//Funcion que muestra el carrito de compras
   function verCarrito() {
 
     
@@ -118,29 +114,29 @@ fetch("./js/excursiones.json")
 
   }
 
-    
+  //Funcion que confirma la compra
   function confirmarCompra()
     {
       carrito=[];
       localStorage.setItem("misProductos", JSON.stringify(carrito));
 
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Su compra ha sido realizada exitosamente",
-        showConfirmButton: false,
-        timer: 1500
-    });
-         
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Su compra ha sido realizada exitosamente",
+          showConfirmButton: false,
+          timer: 1500
+      });
+               
     }
            
-    //Funcion que calcula el total de la compra
+ //Funcion que calcula el total de la compra
   function totalExcursiones(){
             const total = carrito.reduce((acumulador, elemento) => acumulador + (elemento.precio * elemento.cantidad), 0);
             return total;
           }
 
-    //Funcion que vacia el carrito de Compras
+  //Funcion que vacia el carrito de Compras
   function vaciarCarrito(){
 
     if(carrito.length >=1){
@@ -171,25 +167,24 @@ fetch("./js/excursiones.json")
       });
 
     }else
-      mostrarRespuestaToast("No hay excursiones en el carrito");
+      mostrarNotificacion("No hay excursiones en el carrito");
 
     }
-
+    //Funcion que elimina una excursion del carrito
     function eliminarDelCarrito(idExcursion){
 
       let excursionAEliminar = todasLasExcursiones.find(el=> el.id === idExcursion);
 
       carrito = carrito.filter(item => item.id !== parseInt(idExcursion));
 
-      Toastify({
-        text: `Eliminaste ${excursionAEliminar.nombre} del carrito`,
-        duration: 2000,
-    }).showToast();
+      let mensaje= "Eliminaste " + excursionAEliminar.nombre + " del carrito"
+
+      mostrarNotificacion(mensaje);
 
       verCarrito();
     }
-
-    function mostrarRespuestaToast(mensaje){
+  //Funcion que muestra las notificaciones
+    function mostrarNotificacion(mensaje){
 
       Toastify({
         text: `${mensaje}`,
@@ -197,7 +192,7 @@ fetch("./js/excursiones.json")
     }).showToast();
 
     }
-
+//Funcion que carga el carrito de compras
     function cargarCarritoDeCompras(){
 
        //valida si existe alguna excursion en el carrito y carga el listado de excursiones del carrito
@@ -259,7 +254,7 @@ fetch("./js/excursiones.json")
         btnConfirmarCompra.onclick = () => confirmarCompra();
          
     }else
-        mostrarRespuestaToast("No hay excursiones en el carrito");
+        mostrarNotificacion("No hay excursiones en el carrito");
 
     }
 
